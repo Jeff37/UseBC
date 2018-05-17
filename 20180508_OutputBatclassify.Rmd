@@ -1,0 +1,115 @@
+---
+title: "Manipulate the output of Batclassify"
+author: "JF Godeau"
+date: "8 May 2018"
+output:
+  pdf_document:
+    toc: yes
+  html_document:
+    fig_caption: yes
+    self_contained: no
+    toc: yes
+  word_document:
+    toc: yes
+---
+
+```{r setup, include=FALSE}
+#FILE <- file.choose()
+DIR <- "/media/jf/Elements/Audiomoth/20180512_Las-mlocinski_COSSUS"
+FILE <- paste(DIR,"Results.csv",sep="/")
+require(data.table)
+require(lubridate)
+require(knitr)
+knitr::opts_chunk$set(echo = FALSE, message = FALSE)
+#knitr::opts_knit$set(root.dir=DIR) # ???
+# Threshold value of probablilities to discard
+Trsh <- 0.5
+```
+
+## General info
+
+```{r 'Reformat Date and Time'}
+RBC <- read.csv(FILE)
+DT.RBC <- data.table(RBC)
+DT.RBC[, Date := ymd(substring(DT.RBC$FileName,1,10))]
+DT.RBC[, Time := as.character(hms(substring(DT.RBC$FileName,12,19)))]
+PER <- max(ymd_hms(DT.RBC$FileName, tz="Europe/Amsterdam")) - min(ymd_hms(DT.RBC$FileName, tz="Europe/Amsterdam"))
+PER.h <- round(difftime(max(ymd_hms(DT.RBC$FileName, tz="Europe/Amsterdam")),
+         min(ymd_hms(DT.RBC$FileName, tz="Europe/Amsterdam"))
+         ,units="hours"),1)
+DT.num <- DT.RBC[,5:16]
+LogiLine2keep <- apply(DT.num, 1, max) > Trsh
+```
+
+Name of the folder: **`r unique(DT.RBC$FilePath)`**  
+Number of files: **`r dim(DT.RBC)[1]`**  
+Number of files with at least one probability value above the threshold (defined as `r Trsh`): **`r sum(LogiLine2keep)`**  
+Dates recorded for these files: `r paste(unique(DT.RBC$Date), collapse="; ")`  
+Time difference between first and last recording: **`r round(PER,1)`** , (= `r PER.h` hours).  
+
+## Maximal score obtained for each species
+### All species of Batclassify result table
+
+```{r "Global probability for each species"}
+MxSp <- sapply(DT.num, max)
+#kable(MxSp, caption="General score")
+kable(data.frame(t(MxSp)), caption="General score")
+```
+
+### Only species with a probability above the threshold (`r Trsh`)  
+
+```{r "Global probability for each species Sup threshold"}
+kable(data.frame(t(MxSp[MxSp > Trsh])), caption="Species with p > 0.5")
+```
+
+
+## Number of files where probability is at least above the threshold
+### For each species  
+
+```{r 'Select the species, if any, above the threshold for each file'}
+CompMax <- cbind(max.col(DT.num[LogiLine2keep,], "first"),
+          max.col(DT.num[LogiLine2keep,], "last"))
+LogiOneMax <- CompMax[,1] - CompMax[,2] == 0
+DFSpMax <- cbind(FileName=as.character(DT.RBC$FileName[LogiLine2keep]),
+           SpeciesMax=names(DT.num)[CompMax[,1]],
+           Prob=apply(DT.num, 1, max)[LogiLine2keep])
+
+if(any(!LogiOneMax)){
+  Idx <- which(!LogiOneMax)
+  if(sum(!LogiOneMax)>1){
+    DFSpMax[Idx,2] <- apply(matrix(names(DT.num)[CompMax],
+                                   nrow=length(LogiOneMax))[Idx,],1,
+                            function(x) paste(x, collapse="-"))
+  } else {
+    DFSpMax[Idx,2] <- paste(names(DT.num)[CompMax[Idx,]], collapse = "-")
+  }
+}
+DFSpMax <- data.frame(DFSpMax)
+kable(sort(table(DFSpMax$SpeciesMax), decreasing = T), col.names = c("Species","N"))
+```
+
+### For each species per category of probability  
+
+```{r SepProbCat}
+kable(as.data.frame.matrix(table(DFSpMax$SpeciesMax, round(as.numeric(as.character(DFSpMax$Prob)),1))),
+      caption="Number of files with each species for probablility categories")
+
+```
+
+
+## Fully detailed results
+
+```{r 'Final table (PDF or docx)', include=T}
+kable(DFSpMax) #If not html output
+```
+
+
+```{r 'Final table', eval=F, include=F, results='asis'}
+suppressPackageStartupMessages(library(googleVis))
+require(googleVis)
+op <- options(gvis.plot.tag='chart') ### to export the chart/table in knitted html
+Table <- gvisTable(DFSpMax)
+plot(Table)
+```
+
+
