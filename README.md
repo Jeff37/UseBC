@@ -11,3 +11,8 @@ My usage of it is to visualize the results on the .html page, allowing to reorde
 **Note** that depending on the file produced you should change the flags TRUE/FALSE of the two last chunks, enable the penultimate (and disable the last one) for .docx and .pdf and opposite when producing the .html  
 
 This script is a first draft and should evolve, feel free to branch it or contact me directly at [jfgodeau@gmail.com](mailto:jfgodeau@gmail.com).  
+
+## Next steps
++ sort sound files in subfolders depending on the results
+  * delete empty files (?)  
+  * create subfolders such as NSL, Bbar, PIP, Myotis, ... and send corresponding files  
