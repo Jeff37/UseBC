@@ -1,0 +1,480 @@
+---
+title: "Output of Batclassify"
+author: "JF Godeau"
+date: "`r Sys.setlocale('LC_ALL', 'en_GB.UTF-8'); format(Sys.time(), '%d %B %Y')`"
+output:
+  html_document:
+    fig_caption: yes
+    self_contained: no
+    toc: yes
+  pdf_document:
+    toc: yes
+  word_document:
+    toc: yes
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+#FILE <- file.choose()
+DIR <- "/media/jf/Elements/Audiomoth/20180713_AfterLIFE_Mellier/PAVONIA"
+FILE <- paste(DIR,"Results.csv",sep="/")
+require(data.table)
+require(lubridate)
+require(knitr)
+knitr::opts_chunk$set(echo = FALSE, message = FALSE)
+#knitr::opts_knit$set(root.dir=DIR) # ???
+# Threshold value of probablilities to discard
+Trsh <- 0.69
+```
+
+## General info
+
+```{r 'Reformat Date and Time'}
+RBC <- read.csv(FILE)
+DT.RBC <- data.table(RBC)
+DT.RBC[, Date := ymd(substring(DT.RBC$FileName,1,10))]
+DT.RBC[, Time := as.character(hms(substring(DT.RBC$FileName,12,19)))]
+PER <- max(ymd_hms(DT.RBC$FileName, tz="Europe/Amsterdam")) - min(ymd_hms(DT.RBC$FileName, tz="Europe/Amsterdam"))
+PER.h <- round(difftime(max(ymd_hms(DT.RBC$FileName, tz="Europe/Amsterdam")),
+                        min(ymd_hms(DT.RBC$FileName, tz="Europe/Amsterdam"))
+                        ,units="hours"),1)
+DT.num <- data.table(DT.RBC[,5:16], keep.rownames=T)
+#DT.num[,Ppyg := NULL] ## !! Remove Ppyg data!!
+LogiLine2keep <- apply(DT.num, 1, max) > Trsh
+LogiLine2keepNoPyg <- apply(DT.num[,-10], 1, max) > Trsh
+
+TM <- as.POSIXct(DT.RBC$FileName, format="%Y-%m-%d_%H_%M_%S")
+TM.TSH <- data.frame(time=TM[LogiLine2keepNoPyg])
+TM.TSH$valmax <- apply(DT.num, 1, max)[LogiLine2keepNoPyg]
+require(ggplot2)
+#ggplot(TM.TSH, aes(time, valmax)) + geom_point()
+G1 <- ggplot(data.frame(TM), aes(TM, 0)) +
+  geom_point() +
+  theme_bw()+
+  #  geom_point(data=TM.TSH, aes(time, valmax), col="red",  inherit.aes = F) +
+  #  scale_y_continuous(limits=c(min(TM.TSH$valmax), max(TM.TSH$valmax))) +
+  geom_histogram(data=TM.TSH, aes(x=time), stat ="bin",  inherit.aes = F, alpha= 0.5, binwidth=1000) +
+  #  scale_y_continuous(sec.axis = sec_axis(~., name = "NEW")) +
+  scale_x_datetime(date_breaks="2 hours") +
+  theme(axis.text.x = element_text(angle = 90, vjust = 1.0, hjust = 1.0))+
+  xlab("Time") + ylab("N samples > Threshold")
+
+```
+
+Name of the folder: **`r unique(DT.RBC$FilePath)`**  
+Number of files: **`r dim(DT.RBC)[1]`**  
+Number of files with at least one probability value above the threshold (defined as `r Trsh`): **`r sum(LogiLine2keep)`**  
+Dates recorded for these files: `r paste(unique(DT.RBC$Date), collapse="; ")`  
+Time difference between first and last recording: **`r round(PER,1)`** , (= `r PER.h` hours).  
+
+## Distribution of the data in time  
+Black dots at y=0 shows the recording period.  
+
+```{r, fig.height=3}
+G1
+```
+
+## Maximal score obtained for each species
+### All species of Batclassify result table
+
+```{r "Global probability for each species"}
+MxSp <- sapply(DT.num, max)
+#kable(MxSp, caption="General score")
+kable(data.frame(t(MxSp)), caption="General score")
+```
+
+### Only species with a probability above the threshold (`r Trsh`)  
+
+```{r "Global probability for each species Sup threshold"}
+kable(data.frame(t(MxSp[MxSp > Trsh])), caption="Species with p > 0.5")
+```
+
+## Number of files where probability is at least above the threshold
+### For each species  
+
+```{r 'Select the species, if any, above the threshold for each file'}
+CompMax <- cbind(max.col(DT.num[LogiLine2keep,], "first"),
+                 max.col(DT.num[LogiLine2keep,], "last"))
+Follow <- apply(DT.num[LogiLine2keep,] ,
+                1,
+                function(x){ord <- order(x, decreasing = T)
+                paste(paste(colnames(DT.num)[ord][ x[ord] > Trsh][-1],
+                            x[ord][ x[ord] > Trsh][-1]), collapse=" / ")
+                })
+LogiOneMax <- CompMax[,1] - CompMax[,2] == 0
+DFSpMax <- cbind(FileName=as.character(DT.RBC$FileName[LogiLine2keep]),
+                 SpeciesMax=names(DT.num)[CompMax[,1]],
+                 Prob=apply(DT.num, 1, max)[LogiLine2keep],
+                 OtherSp = as.character(Follow))
+
+if(any(!LogiOneMax)){
+  Idx <- which(!LogiOneMax)
+  if(sum(!LogiOneMax)>1){
+    DFSpMax[Idx,2] <- apply(matrix(names(DT.num)[CompMax],
+                                   nrow=length(LogiOneMax))[Idx,],
+                            1,
+                            function(x) paste(x, collapse="-"))
+  } else {
+    DFSpMax[Idx,2] <- paste(names(DT.num)[CompMax[Idx,]], collapse = "-")
+  }
+}
+DFSpMax <- data.frame(DFSpMax)
+
+kable(sort(table(DFSpMax$SpeciesMax), decreasing = T), col.names = c("Species","N"))
+```
+
+### For each species per category of probability  
+
+```{r SepProbCat}
+kable(as.data.frame.matrix(table(DFSpMax$SpeciesMax, round(as.numeric(as.character(DFSpMax$Prob)),1))),
+      caption="Number of files with each species for probablility categories")
+```
+
+## Fully detailed results (raw)
+
+```{r 'Final table (PDF or docx)', include=F}
+kable(DFSpMax) #If not html output
+```
+
+
+```{r 'Final table', eval=T, include=T, results='asis'}
+suppressPackageStartupMessages(library(googleVis))
+require(googleVis)
+op <- options(gvis.plot.tag='chart') ### to export the chart/table in knitted html
+Table <- gvisTable(DFSpMax,
+                   options=list(page='enable',pageSize=20))
+plot(Table)
+```
+
+## Analyse of NSL group
+
+```{r "NSL-metrics"}
+require(bioacoustics)
+require(ggpubr)
+Nms <- DFSpMax$FileName[grepl("NSL", DFSpMax$SpeciesMax) | grepl("NSL", DFSpMax$OtherSp)]
+Pktmp <- do.call("rbind",
+                 lapply(Nms, function(x){
+                   AUD <- read_audio(paste0(DIR,"/",x,".wav"))
+                   Output <- try(threshold_detection(AUD,
+                                                     settings=T, HPF=17000,
+                                                     FFT_size = 1024, threshold = 4))
+                   Output$event_data[,c("filename", "starting_time", "duration",
+                                        "freq_max_amp", "freq_max", "freq_min",
+                                        "bandwidth", "slope", "curve_neg", "snr")]
+                 }))
+Pk <- droplevels(Pktmp[Pktmp$filename %in% names(which(table(Pktmp$filename) > 2)),])
+
+## Logicals
+Cd.NYCNOC <- Pk$freq_max_amp < 22000 & Pk$freq_min < 21000
+Cd.QFC <- Pk$duration > 5 & Pk$bandwidth < 5000
+
+DF.NSL <- data.frame(filename=names(table(Pk$filename)),
+                     N.Signals = as.vector(table(Pk$filename)),
+                     N.Sig_QFC = as.vector(table(Pk$filename[Cd.QFC])),
+                     N.Sig_NYCNOC = as.vector(table(Pk$filename[Cd.NYCNOC])))
+#kable(DF.NSL[order(DF.NSL$N.Signals.Freq, decreasing = T),])
+
+```
+
+The samples evaluated with at least 70% of probablility of belonging to the *NSL group* are analyzed with `bioacoustics::threshold_detection()`.  
+First of all, we discard the recordings where less than 3 signals were detected (at the selected threshold!). The next graphs are finally performed on `r length(levels(Pk$filename))` files are selected out of `r length(unique(Nms))` files selected from BatClassify, totalizing `r dim(Pk)[1]` signals.  
+
+### Full dataset of NSL
+#### Dispersion on the FME and FT scale.  
+
+```{r "NSL-plot1"}
+bk.FME <- c(15,20,25,30,38,40,45,50)*1000
+if(length(Pk[,1]) > 0){
+  theme_set(theme_bw())
+  ## Plots
+  Gx1 <- ggplot(Pk, aes(y=freq_max_amp, x=factor(1))) +
+    geom_boxplot() + geom_jitter(aes(color=filename), alpha = 0.3, size = 0.7) +
+    ggtitle("FME (limit Nnoc ~ 22 kHz)") +
+    geom_hline(yintercept = 22000, color='red', linetype=2) +
+    xlab("") + scale_y_continuous(breaks = bk.FME)
+  
+  Gx2 <- ggplot(Pk, aes(y=freq_min, x=factor(1))) +
+    geom_boxplot() + geom_jitter(aes(color=filename), alpha = 0.3, size = 0.7) +
+    ggtitle("FT (limit Nnoc ~ 21 kHz)") +
+    geom_hline(yintercept = 21000, color='orange', linetype=2) +
+    xlab("") + scale_y_continuous(breaks = bk.FME)
+  ggarrange(Gx1, Gx2, legend = 'none')
+}
+```
+
+#### Plots *Barataud*
+
+```{r "NSL-plot2"}
+if(length(Pk[,1]) > 0){
+  G1 <- ggplot(data=Pk, aes(x=freq_max_amp, y=bandwidth, color=filename)) +
+    geom_point(size = 0.6) + ggtitle("LB vs. FME")
+  G2 <- ggplot(data=Pk, aes(x=duration, y=freq_min, color=filename)) +
+    geom_point(size = 0.6) + ggtitle("FT vs. Durée")
+  ggarrange(G1, G2, common.legend = T, legend = 'none')
+}
+```
+
+### Selection of possible QFC
+At least 1 signal where duration > 5 ms and LB < 5 kHz.  
+
+```{r "NSL-plot3"}
+if(length(Pk[,1]) > 0){
+  qfc.y1 <- c(0,6000)
+  qfc.x1 <- c(15000,36000)
+  qfc.y2 <- c(15000,36000)
+  qfc.x2 <- c(5,26)
+  if(any(Cd.QFC)){
+    hist(table(Pk$filename[Cd.QFC]), 25,
+         main="Frequency of presence of recordings (with min 3 signals/rec.)",
+         xlab="Number of signals per file")
+    
+    Gqfc1 <- ggplot(data=Pk[Cd.QFC,], aes(x=freq_max_amp, y=bandwidth, color=filename)) +
+      geom_point(size = 0.6)  + ggtitle("LB vs. FME (QFC only!)") + ylim(qfc.y1) + xlim(qfc.x1)
+    Gqfc2 <- ggplot(data=Pk[Cd.QFC,], aes(x=duration, y=freq_min, color=filename)) +
+      geom_point(size = 0.6)  + ggtitle("FT vs. Durée (QFC only!)") + ylim(qfc.y2) + xlim(qfc.x2)
+    ggarrange(Gqfc1, Gqfc2, common.legend = T, legend = 'none')
+  }
+}
+```
+
+### Selection of possible *Nyctalus noctula*
+i. e. FME < 22 kHz and FT < 21 kHz
+
+```{r "NSL-plot4"}
+if(any(Cd.NYCNOC)){
+  #  table(factor(Pk$filename[Cd.NYCNOC]))
+  hist(table(Pk$filename[Cd.NYCNOC]), 25,
+       main="Frequency of presence of recordings (with min 3 signals/rec.)",
+       xlab="Number of signals per file")
+  
+  GNN1 <- ggplot(data=Pk[Cd.NYCNOC,], aes(x=freq_max_amp, y=bandwidth, color=filename)) +
+    geom_point(size = 0.6)  + ggtitle("LB vs. FME (NYCNOC? only)")
+  GNN2 <- ggplot(data=Pk[Cd.NYCNOC,], aes(x=duration, y=freq_min, color=filename)) +
+    geom_point(size = 0.6)  + ggtitle("FT vs. Durée (NYCNOC? only)")
+  ggarrange(GNN1, GNN2, common.legend = T, legend = 'none')
+}
+```
+
+### Recap per file  
+
+```{r 'NSL table', eval=T, include=T, results='asis'}
+op <- options(gvis.plot.tag='chart') ### to export the chart/table in knitted html
+Table <- gvisTable(DF.NSL[order(DF.NSL$N.Signals, decreasing = T),],
+                   options=list(page='enable',pageSize=25))
+plot(Table)
+```
+
+## Analyse of Ppyg group
+Valeurs moyennes des métriques sur tous les signaux par fichier.  
+
+```{r "Ppyg-metrics"}
+Nms <- DFSpMax$FileName[grepl("Ppyg", DFSpMax$SpeciesMax)]
+if(length(Nms) > 0){
+  Pk.Ppgtmp <- do.call("rbind",
+                       lapply(Nms, function(x){
+                         AUD <- read_audio(paste0(DIR,"/",x,".wav"))
+                         Output <- try(threshold_detection(AUD,
+                                                           settings=T, HPF=17000,
+                                                           FFT_size = 1024, threshold = 4))
+                         Output$event_data[,c("filename", "starting_time", "duration",
+                                              "freq_max_amp", "freq_max", "freq_min",
+                                              "bandwidth", "slope", "curve_neg", "snr")]
+                       }))
+  if(length(Pk.Ppgtmp) != 0){
+    Pk.Ppg <- droplevels(Pk.Ppgtmp[Pk.Ppgtmp$filename %in% names(which(table(Pk.Ppgtmp$filename) > 2)),])
+  } else {Pk.Ppg <- NULL}
+  
+  ## Logicals
+  if(length(Pk.Ppg[,1]) > 0){
+    Cd.QFC <- Pk.Ppg$duration > 5 & Pk.Ppg$bandwidth < 5000
+    DF.Ppg <- data.frame(N.Signals = as.vector(table(factor(Pk.Ppg$filename))),
+                         #           N.Sig_QFC = as.vector(table(Pk.Ppg$filename[Cd.QFC])),
+                         FME = tapply(Pk.Ppg$freq_max_amp, Pk.Ppg$filename, median),
+                         FT = tapply(Pk.Ppg$freq_min, Pk.Ppg$filename, median))
+    #kable(DF.Ppg[order(DF.Ppg$N.Signals.Freq, decreasing = T),], row.names = F, caption = "Valeurs moyennes des métriques sur tous les signaux par fichier")
+  } else {DF.Ppg <- data.frame(N.Signals = NA, FME = NA, FT = NA)}
+}
+```
+
+The samples evaluated with at least 70% of probablility of belonging to the *Ppyg group*, at the first place, are presented. The measures performed by threshold_detection() function were done with the parameters FFT_size = 1024 and threshold = 4.  
+First of all, we discard the recordings where less than 3 signals were detected (at the selected threshold!). The next graphs are finally performed on `r length(levels(Pk.Ppg$filename))` files are selected out of `r length(unique(Nms))` files selected from BatClassify, totalizing `r dim(Pk.Ppg)[1]` signals.  
+
+### Full dataset of Ppyg
+#### Dispersion on the FME and FT scale.  
+
+```{r "Ppyg-plot1"}
+if(length(Pk.Ppg[,1]) > 0){
+  theme_set(theme_bw())
+  ## Plots
+  Gx1 <- ggplot(Pk.Ppg, aes(y=freq_max_amp, x=factor(1))) +
+    geom_boxplot(size = 0.6) + geom_jitter(aes(color=filename), alpha = 0.5) +
+    ggtitle("FME") +
+    xlab("") + scale_y_continuous(breaks = bk.FME)
+  Gx2 <- ggplot(Pk.Ppg, aes(y=freq_min, x=factor(1))) +
+    geom_boxplot(size = 0.6) + geom_jitter(aes(color=filename), alpha = 0.5) +
+    ggtitle("FT") +
+    xlab("") + scale_y_continuous(breaks = bk.FME)
+  ggarrange(Gx1, Gx2, legend = 'none')
+}
+```
+
+#### Plot *Barataud*  
+
+```{r "Ppyg-plot2"}
+if(length(Pk.Ppg[,1]) > 0){
+  Gqfc1 <- ggplot(data=Pk.Ppg, aes(x=freq_max_amp, y=bandwidth, color=filename)) +
+    geom_point(size = 0.6)  + ggtitle("LB vs. FME")
+  Gqfc2 <- ggplot(data=Pk.Ppg, aes(x=duration, y=freq_min, color=filename)) +
+    geom_point(size = 0.6)  + ggtitle("FT vs. Durée")
+  ggarrange(Gqfc1, Gqfc2, common.legend = T, legend = 'none')
+}
+```
+
+
+```{r 'Ppyg table', eval=T, include=T, results='asis'}
+if(length(Pk.Ppg[,1]) > 0){
+  op <- options(gvis.plot.tag='chart') ### to export the chart/table in knitted html
+  Table <- gvisTable(Pk.Ppg,
+                     options=list(page='enable',pageSize=25))
+  plot(Table)
+}
+```
+
+
+## Analyse of Ppip group
+Valeurs moyennes des métriques sur tous les signaux par fichier.  
+
+```{r "Ppip-metrics"}
+Nms <- DFSpMax$FileName[grepl("Ppip", DFSpMax$SpeciesMax)]
+if(length(Nms) > 0){
+  Pk.Piptmp <- do.call("rbind",
+                       lapply(Nms, function(x){
+                         AUD <- read_audio(paste0(DIR,"/",x,".wav"))
+                         Output <- try(threshold_detection(AUD,
+                                                           settings=T, HPF=17000,
+                                                           FFT_size = 1024, threshold = 4))
+                         Output$event_data[,c("filename", "starting_time", "duration",
+                                              "freq_max_amp", "freq_max", "freq_min",
+                                              "bandwidth", "slope", "curve_neg", "snr")]
+                       }))
+  Pk.Pip <- droplevels(Pk.Piptmp[Pk.Piptmp$filename %in% names(which(table(Pk.Piptmp$filename) > 2)) , ])
+  ## Logical
+  Cd.QFC <- Pk.Pip$duration > 5 & Pk.Pip$bandwidth < 5000
+  
+  DF.Pip <- data.frame(filename=names(table(Pk.Pip$filename)),
+                       N.Signals = as.vector(table(factor(Pk.Pip$filename))),
+                       N.Sig_QFC = as.vector(table(Pk.Pip$filename[Cd.QFC])),
+                       FME = round(as.vector(tapply(Pk.Pip$freq_max_amp, Pk.Pip$filename, median))/1000 , 2),
+                       FT = round(as.vector(tapply(Pk.Pip$freq_min, Pk.Pip$filename, median))/1000 , 2)
+  )
+  #kable(DF.Pip[order(DF.Pip$N.Signals, decreasing = T),], row.names = F, caption = "Valeurs moyennes des métriques sur tous les signaux par fichier")
+} # close if() line 350
+```
+
+The samples evaluated with at least 70% of probablility of belonging to *Ppip*, at the first place, are presented. The measures performed by threshold_detection() function were done with the parameters FFT_size = 1024 and threshold = 4.  
+`r try(length(levels(Pk.Pip$filename)))` files are selected, totalizing `r try(dim(Pk.Pip)[1])` signals.  
+
+### Full dataset of Ppip
+#### Dispersion on the FME and FT scale.  
+
+```{r "Ppip-plot1"}
+if(length(Pk.Pip[,1]) > 0){
+  theme_set(theme_bw())
+  ## Plots
+  Gx1 <- ggplot(Pk.Pip, aes(y=freq_max_amp, x=factor(1))) +
+    geom_boxplot() + geom_jitter(aes(color=filename), alpha = 0.5, size=0.4) +
+    ggtitle("FME") +
+    xlab("") + geom_hline(yintercept =  43000) + scale_y_continuous(breaks = bk.FME) +
+    ylim(c(30000,max(Pk.Pip$freq_max_amp)))
+  Gx2 <- ggplot(Pk.Pip, aes(y=freq_min, x=factor(1))) +
+    geom_boxplot() + geom_jitter(aes(color=filename), alpha = 0.5, size=0.4) +
+    ggtitle("FT") +
+    xlab("") + geom_hline(yintercept =  42000) + scale_y_continuous(breaks = bk.FME) +
+    ylim(c(30000,max(Pk.Pip$freq_min)))
+  ggarrange(Gx1, Gx2, legend = 'none')
+}
+```
+
+#### Plot Barataud  
+**No QFC!**  
+
+```{r "Ppip-plot2"}
+if(length(Pk.Pip[,1]) > 0){
+  #  table(factor(Pk.Pip$filename))
+  NmsPipSp <- DF.Pip$filename[DF.Pip$FME < 43 & DF.Pip$FME > 32]
+  Pk.Pip$Med38 <- "Ppip"
+  Pk.Pip$Med38[Pk.Pip$filename %in% NmsPipSp] <- "PipNat?"
+  Gqfc1 <- ggplot(data=Pk.Pip[Pk.Pip$bandwidth > 5000,], aes(x=freq_max_amp, y=bandwidth, color=Med38)) +
+    geom_point(size=0.4)  + ggtitle("FMAppl: LB vs. FME") + xlim(c(32000, 70000))
+  Gqfc2 <- ggplot(data=Pk.Pip[Pk.Pip$bandwidth > 5000,], aes(x=duration, y=freq_min, color=Med38)) +
+    geom_point(size=0.4)  + ggtitle("FMAppl: FT vs. Durée") + ylim(c(30000,65000))
+  ggarrange(Gqfc1, Gqfc2, common.legend = T)
+}
+```
+
+#### QFC: PIPPIP
+
+```{r "Ppip-plot3", warning=F}
+qfc.y1 <- c(-2000,6000)
+qfc.x1 <- c(30000,60000)
+qfc.y2 <- c(30000,60000)
+qfc.x2 <- c(5,17)
+
+if(length(Pk.Pip[,1]) > 0){
+  #  table(factor(Pk.Pip$filename[Cd.QFC]))
+  NmsPipSpQFC <- DF.Pip$filename[DF.Pip$FME < 41 & DF.Pip$FME > 30]
+  Pk.Pip$Med38[Pk.Pip$filename %in% NmsPipSpQFC] <- "PipNat?"
+  Gqfc1 <- ggplot(data=Pk.Pip[Cd.QFC,], aes(x=freq_max_amp, y=bandwidth, color=Med38)) +
+    geom_point(size = 0.5) +
+    ggtitle("LB vs. FME (QFC only!)") +
+    ylim(qfc.y1) + xlim(c(30000,60000))
+  Gqfc2 <- ggplot(data=Pk.Pip[Cd.QFC,], aes(x=duration, y=freq_min, color=Med38)) +
+    geom_point(size = 0.5) +
+    ggtitle("FT vs. Durée (QFC only!)") +
+    ylim(c(30000,55000)) + xlim(c(5,17))
+  ggarrange(Gqfc1, Gqfc2, common.legend = T)
+}
+
+```
+
+#### Main table per recording
+
+```{r 'Ppip table', eval=T, include=T, results='asis'}
+if(length(Pk.Pip[,1]) > 0){
+  op <- options(gvis.plot.tag='chart') ### to export the chart/table in knitted html
+  Table <- gvisTable(as.data.frame(DF.Pip[order(DF.Pip$N.Signals, decreasing = T),]),
+                     options=list(page='enable',pageSize=25))
+  plot(Table)
+}
+```
+
+## Detailed results with additional info based on the results of bioacoustics analysis  
+Exclusion of records with less than 3 signals detected.  
+
+```{r}
+if(exists("DF.NSL")){
+  Nm.NSL <- stringr::str_sub(as.character(DF.NSL$filename), end=-5)
+  NSL <- ifelse(DFSpMax$FileName %in% Nm.NSL, "NSL", "")} else {NSL <- rep("",length(DFSpMax$FileName))}
+
+if(exists("DF.Ppg")){
+  Nm.Pg <- stringr::str_sub(row.names(DF.Ppg), end=-5)
+  Ppyg <- ifelse(DFSpMax$FileName %in% Nm.Pg, "Ppyg?", "")} else {Ppyg <- rep("",length(DFSpMax$FileName))}
+
+if(exists("DF.Pip")){
+  Nm.Pp <- stringr::str_sub(as.character(DF.Pip$filename), end=-5)
+  Ppip <- ifelse(DFSpMax$FileName %in% Nm.Pp, "Ppip", "")
+  Lg.Psp <- DFSpMax$FileName %in% stringr::str_sub(as.character(NmsPipSp), end=-5)
+  Ppip[Lg.Psp] <- "PipNat?"
+} else {
+  Ppip <- rep("",length(DFSpMax$FileName))}
+
+DFSpMax$Add <- paste(NSL, Ppyg, Ppip, sep = "-")
+```
+
+```{r 'Enriched table', eval=T, include=T, results='asis'}
+op <- options(gvis.plot.tag='chart') ### to export the chart/table in knitted html
+Table <- gvisTable(DFSpMax)
+plot(Table)
+```
+

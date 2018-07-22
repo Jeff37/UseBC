@@ -17,7 +17,7 @@ editor_options:
 
 ```{r setup, include=FALSE}
 #FILE <- file.choose()
-DIR <- "/media/jf/Elements/Audiomoth/20180620_Florenville/COSSUS"
+DIR <- "/media/jf/Elements/Audiomoth/20180601_Polany/SPHINX"
 FILE <- paste(DIR,"Results.csv",sep="/")
 require(data.table)
 require(lubridate)
@@ -123,6 +123,7 @@ if(any(!LogiOneMax)){
   }
 }
 DFSpMax <- data.frame(DFSpMax)
+
 kable(sort(table(DFSpMax$SpeciesMax), decreasing = T), col.names = c("Species","N"))
 ```
 
@@ -152,9 +153,110 @@ Table <- gvisTable(DFSpMax)
 plot(Table)
 ```
 
+## Analyse of NSL group
+
+```{r "NSL-metrics"}
+require(bioacoustics)
+require(ggpubr)
+Nms <- DFSpMax$FileName[grepl("NSL", DFSpMax$SpeciesMax) | grepl("NSL", DFSpMax$OtherSp)]
+#Nms <- DFSpMax$FileName[grepl("Ppyg", DFSpMax$SpeciesMax) | grepl("Ppyg", DFSpMax$OtherSp)]
+
+Pk <- do.call("rbind",
+              lapply(Nms, function(x){
+  AUD <- read_audio(paste0(DIR,"/",x,".wav"))
+  Output <- try(threshold_detection(AUD,
+                                    settings=T, HPF=17000,
+                                    FFT_size = 1024, threshold = 6))
+  Output$event_data[,c("filename", "starting_time", "duration",
+                       "freq_max_amp", "freq_max", "freq_min",
+                       "bandwidth", "slope", "curve_neg", "snr")]
+}))
+
+## Logicals
+Cd.NYCNOC <- Pk$freq_max_amp < 22000 & Pk$freq_min < 21000
+Cd.QFC <- Pk$duration > 5 & Pk$bandwidth < 5000
+
+
+DF.NSL <- data.frame(N.Signals = table(factor(Pk$filename)),
+           N.Sig_QFC = as.vector(table(Pk$filename[Cd.QFC])),
+           N.Sig_NYCNOC = as.vector(table(Pk$filename[Cd.NYCNOC])))
+kable(DF.NSL[order(DF.NSL$N.Signals.Freq, decreasing = T),])
+
+```
+
+The samples evaluated with at least 70% of probablility of belonging to the *NSL group* are analyzed broadly.  
+`r length(levels(Pk$filename))` files are selected, totalizing `r dim(Pk)[1]` signals.  
+
+### Full dataset of NSL
+#### Dispersion on the FME and FT scale.  
+
+
+```{r "NSL-plot1"}
+theme_set(theme_bw())
+
+## Plots
+Gx1 <- ggplot(Pk, aes(y=freq_max_amp, x=factor(1))) +
+  geom_boxplot() + geom_jitter(aes(color=filename, alpha = 0.4)) +
+  ggtitle("FME (limit Nnoc ~ 22 kHz)") +
+  geom_hline(yintercept = 22000, color='red', linetype=2) +
+  xlab("")
+Gx2 <- ggplot(Pk, aes(y=freq_min, x=factor(1))) +
+  geom_boxplot() + geom_jitter(aes(color=filename, alpha = 0.3)) +
+  ggtitle("FT (limit Nnoc ~ 21 kHz)") +
+  geom_hline(yintercept = 21000, color='orange', linetype=2) +
+  xlab("")
+ggarrange(Gx1, Gx2, legend = 'none')
+
+```
+
+#### Plots *Barataud*
+
+```{r "NSL-plot2"}
+G1 <- ggplot(data=Pk, aes(x=freq_max_amp, y=bandwidth, color=filename)) +
+  geom_point() + ggtitle("LB vs. FME")
+G2 <- ggplot(data=Pk, aes(x=duration, y=freq_min, color=filename)) +
+  geom_point() + ggtitle("FT vs. Durée")
+ggarrange(G1, G2, common.legend = T, legend = 'none')
+```
+
+### Selection of possible QFC
+i.e. duration > 5 ms and LB < 5 kHz
+
+```{r "NSL-plot3"}
+qfc.y1 <- c(0,6000)
+qfc.x1 <- c(15000,36000)
+qfc.y2 <- c(15000,36000)
+qfc.x2 <- c(5,26)
+
+
+table(factor(Pk$filename[Cd.QFC]))
+
+Gqfc1 <- ggplot(data=Pk[Cd.QFC,], aes(x=freq_max_amp, y=bandwidth, color=filename)) +
+  geom_point()  + ggtitle("LB vs. FME (QFC only!)") + ylim(qfc.y1) + xlim(qfc.x1)
+Gqfc2 <- ggplot(data=Pk[Cd.QFC,], aes(x=duration, y=freq_min, color=filename)) +
+  geom_point()  + ggtitle("FT vs. Durée (QFC only!)") + ylim(qfc.y2) + xlim(qfc.x2)
+ggarrange(Gqfc1, Gqfc2, common.legend = T, legend = 'none')
+
+```
+
+### Selection of possible *Nyctalus noctula*
+i. e. FME < 22 kHz and FT < 21 kHz
+
+```{r "NSL-plot4"}
+table(factor(Pk$filename[Cd.NYCNOC]))
+GNN1 <- ggplot(data=Pk[Cd.NYCNOC,], aes(x=freq_max_amp, y=bandwidth, color=filename)) +
+  geom_point()  + ggtitle("LB vs. FME (NYCNOC? only)")
+GNN2 <- ggplot(data=Pk[Cd.NYCNOC,], aes(x=duration, y=freq_min, color=filename)) +
+  geom_point()  + ggtitle("FT vs. Durée (NYCNOC? only)")
+ggarrange(GNN1, GNN2, common.legend = T, legend = 'none')
+
+```
+
+
+
 ## Full table (any > Trsh)  
 
-```{r 'Full table 05', eval=T, include=T, results='asis'}
+```{r 'Full table 05', eval=T, include=F, results='asis'}
 op <- options(gvis.plot.tag='chart') ### to export the chart/table in knitted html
 Table <- gvisTable(DT.RBC[,-c(1,3,4)])
 plot(Table)

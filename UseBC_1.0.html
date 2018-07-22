@@ -1,0 +1,1430 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="JF Godeau" />
+
+<meta name="date" content="2018-07-09" />
+
+<title>Output of Batclassify</title>
+
+<script src="UseBC_1.0_files/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="UseBC_1.0_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="UseBC_1.0_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="UseBC_1.0_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="UseBC_1.0_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="UseBC_1.0_files/navigation-1.1/tabsets.js"></script>
+<link href="UseBC_1.0_files/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="UseBC_1.0_files/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Output of Batclassify</h1>
+<h4 class="author"><em>JF Godeau</em></h4>
+<h4 class="date"><em>09 July 2018</em></h4>
+
+</div>
+
+<div id="TOC">
+<ul>
+<li><a href="#general-info">General info</a></li>
+<li><a href="#distribution-of-the-data-in-time">Distribution of the data in time</a></li>
+<li><a href="#maximal-score-obtained-for-each-species">Maximal score obtained for each species</a><ul>
+<li><a href="#all-species-of-batclassify-result-table">All species of Batclassify result table</a></li>
+<li><a href="#only-species-with-a-probability-above-the-threshold-0.69">Only species with a probability above the threshold (0.69)</a></li>
+</ul></li>
+<li><a href="#number-of-files-where-probability-is-at-least-above-the-threshold">Number of files where probability is at least above the threshold</a><ul>
+<li><a href="#for-each-species">For each species</a></li>
+<li><a href="#for-each-species-per-category-of-probability">For each species per category of probability</a></li>
+</ul></li>
+<li><a href="#fully-detailed-results">Fully detailed results</a></li>
+</ul>
+</div>
+
+<div id="general-info" class="section level2">
+<h2>General info</h2>
+<p>Name of the folder: <strong>Z:/home/jf/Music/TMP_Audiomoth/20180706_AfterLIFE_Florenville/PAVONIA</strong><br />
+Number of files: <strong>2520</strong><br />
+Number of files with at least one probability value above the threshold (defined as 0.69): <strong>177</strong><br />
+Dates recorded for these files: 2018-07-06; 2018-07-07; 2018-07-08<br />
+Time difference between first and last recording: <strong>1.3</strong> , (= 31 hours).</p>
+</div>
+<div id="distribution-of-the-data-in-time" class="section level2">
+<h2>Distribution of the data in time</h2>
+<p>Black dots at y=0 shows the recording period.</p>
+<p><img src="UseBC_1.0_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+</div>
+<div id="maximal-score-obtained-for-each-species" class="section level2">
+<h2>Maximal score obtained for each species</h2>
+<div id="all-species-of-batclassify-result-table" class="section level3">
+<h3>All species of Batclassify result table</h3>
+<table>
+<caption>General score</caption>
+<thead>
+<tr class="header">
+<th align="right">Bbar</th>
+<th align="right">Malc</th>
+<th align="right">Mbec</th>
+<th align="right">MbraMmys</th>
+<th align="right">Mdau</th>
+<th align="right">Mnat</th>
+<th align="right">NSL</th>
+<th align="right">Paur</th>
+<th align="right">Ppip</th>
+<th align="right">Ppyg</th>
+<th align="right">Rfer</th>
+<th align="right">Rhip</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">0.66</td>
+<td align="right">0.09</td>
+<td align="right">0.33</td>
+<td align="right">0.76</td>
+<td align="right">0.66</td>
+<td align="right">0.87</td>
+<td align="right">1</td>
+<td align="right">0.47</td>
+<td align="right">0.98</td>
+<td align="right">0.86</td>
+<td align="right">0.98</td>
+<td align="right">0.03</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="only-species-with-a-probability-above-the-threshold-0.69" class="section level3">
+<h3>Only species with a probability above the threshold (0.69)</h3>
+<table>
+<caption>Species with p &gt; 0.5</caption>
+<thead>
+<tr class="header">
+<th align="right">MbraMmys</th>
+<th align="right">Mnat</th>
+<th align="right">NSL</th>
+<th align="right">Ppip</th>
+<th align="right">Ppyg</th>
+<th align="right">Rfer</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">0.76</td>
+<td align="right">0.87</td>
+<td align="right">1</td>
+<td align="right">0.98</td>
+<td align="right">0.86</td>
+<td align="right">0.98</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="number-of-files-where-probability-is-at-least-above-the-threshold" class="section level2">
+<h2>Number of files where probability is at least above the threshold</h2>
+<div id="for-each-species" class="section level3">
+<h3>For each species</h3>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Species</th>
+<th align="right">N</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Ppip</td>
+<td align="right">107</td>
+</tr>
+<tr class="even">
+<td align="left">Ppyg</td>
+<td align="right">38</td>
+</tr>
+<tr class="odd">
+<td align="left">NSL</td>
+<td align="right">25</td>
+</tr>
+<tr class="even">
+<td align="left">Mnat</td>
+<td align="right">4</td>
+</tr>
+<tr class="odd">
+<td align="left">MbraMmys</td>
+<td align="right">2</td>
+</tr>
+<tr class="even">
+<td align="left">Rfer</td>
+<td align="right">1</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="for-each-species-per-category-of-probability" class="section level3">
+<h3>For each species per category of probability</h3>
+<table>
+<caption>Number of files with each species for probablility categories</caption>
+<thead>
+<tr class="header">
+<th></th>
+<th align="right">0.7</th>
+<th align="right">0.8</th>
+<th align="right">0.9</th>
+<th align="right">1</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>MbraMmys</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td>Mnat</td>
+<td align="right">0</td>
+<td align="right">3</td>
+<td align="right">1</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td>NSL</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">6</td>
+<td align="right">18</td>
+</tr>
+<tr class="even">
+<td>Ppip</td>
+<td align="right">4</td>
+<td align="right">7</td>
+<td align="right">16</td>
+<td align="right">80</td>
+</tr>
+<tr class="odd">
+<td>Ppyg</td>
+<td align="right">18</td>
+<td align="right">19</td>
+<td align="right">1</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td>Rfer</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">1</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="fully-detailed-results" class="section level2">
+<h2>Fully detailed results</h2>
+<table>
+<thead>
+<tr class="header">
+<th align="left">FileName</th>
+<th align="left">SpeciesMax</th>
+<th align="left">Prob</th>
+<th align="left">OtherSp</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">2018-07-06_22_00_30</td>
+<td align="left">Ppyg</td>
+<td align="left">0.72</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-06_22_05_40</td>
+<td align="left">Ppip</td>
+<td align="left">0.98</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-06_22_06_50</td>
+<td align="left">Ppip</td>
+<td align="left">0.98</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-06_22_22_30</td>
+<td align="left">Ppip</td>
+<td align="left">0.78</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-06_22_22_40</td>
+<td align="left">Ppip</td>
+<td align="left">0.86</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-06_22_24_40</td>
+<td align="left">Ppip</td>
+<td align="left">0.98</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-06_22_28_20</td>
+<td align="left">Ppip</td>
+<td align="left">0.98</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-06_22_32_50</td>
+<td align="left">Ppip</td>
+<td align="left">0.97</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-06_22_34_40</td>
+<td align="left">Ppip</td>
+<td align="left">0.98</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-06_22_37_00</td>
+<td align="left">Ppip</td>
+<td align="left">0.98</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-06_22_37_30</td>
+<td align="left">Ppip</td>
+<td align="left">0.98</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-06_22_37_40</td>
+<td align="left">Ppip</td>
+<td align="left">0.72</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-06_22_39_50</td>
+<td align="left">Ppip</td>
+<td align="left">0.88</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-06_22_40_00</td>
+<td align="left">Ppip</td>
+<td align="left">0.98</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-06_22_43_30</td>
+<td align="left">Ppip</td>
+<td align="left">0.98</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-06_22_44_40</td>
+<td align="left">Ppip</td>
+<td align="left">0.98</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-06_22_45_30</td>
+<td align="left">MbraMmys</td>
+<td align="left">0.76</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-06_22_46_00</td>
+<td align="left">Ppip</td>
+<td align="left">0.98</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-06_22_59_20</td>
+<td align="left">Ppip</td>
+<td align="left">0.98</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-06_23_00_20</td>
+<td align="left">Ppip</td>
+<td align="left">0.98</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-06_23_00_30</td>
+<td align="left">Ppip</td>
+<td align="left">0.97</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-06_23_03_30</td>
+<td align="left">NSL</td>
+<td align="left">0.94</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-06_23_04_50</td>
+<td align="left">Ppip</td>
+<td align="left">0.98</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-06_23_05_50</td>
+<td align="left">NSL</td>
+<td align="left">1</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-06_23_06_00</td>
+<td align="left">NSL</td>
+<td align="left">1</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-06_23_07_50</td>
+<td align="left">Ppip</td>
+<td align="left">0.97</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-06_23_08_00</td>
+<td align="left">Ppip</td>
+<td align="left">0.98</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-06_23_08_10</td>
+<td align="left">Ppip</td>
+<td align="left">0.98</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-06_23_09_30</td>
+<td align="left">NSL</td>
+<td align="left">0.87</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-06_23_12_10</td>
+<td align="left">Ppip</td>
+<td align="left">0.94</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-06_23_13_10</td>
+<td align="left">Ppyg</td>
+<td align="left">0.75</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-06_23_14_10</td>
+<td align="left">Ppip</td>
+<td align="left">0.98</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-06_23_21_40</td>
+<td align="left">Mnat</td>
+<td align="left">0.79</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-06_23_24_20</td>
+<td align="left">Ppip</td>
+<td align="left">0.98</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-06_23_26_10</td>
+<td align="left">Ppip</td>
+<td align="left">0.98</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-06_23_26_20</td>
+<td align="left">Ppip</td>
+<td align="left">0.96</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-06_23_29_40</td>
+<td align="left">Ppip</td>
+<td align="left">0.98</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-06_23_30_40</td>
+<td align="left">Ppyg</td>
+<td align="left">0.74</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-06_23_32_30</td>
+<td align="left">Ppip</td>
+<td align="left">0.95</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-06_23_32_40</td>
+<td align="left">Ppip</td>
+<td align="left">0.97</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-06_23_32_50</td>
+<td align="left">NSL</td>
+<td align="left">1</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-06_23_33_00</td>
+<td align="left">NSL</td>
+<td align="left">0.81</td>
+<td align="left">Ppyg 0.76</td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-06_23_36_00</td>
+<td align="left">Ppip</td>
+<td align="left">0.85</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-06_23_37_50</td>
+<td align="left">Ppyg</td>
+<td align="left">0.73</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-06_23_39_50</td>
+<td align="left">NSL</td>
+<td align="left">0.99</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-06_23_47_10</td>
+<td align="left">Ppip</td>
+<td align="left">0.98</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-06_23_52_50</td>
+<td align="left">Ppip</td>
+<td align="left">0.98</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-06_23_56_50</td>
+<td align="left">Ppip</td>
+<td align="left">0.87</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-07_03_30_10</td>
+<td align="left">Ppyg</td>
+<td align="left">0.83</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-07_03_32_10</td>
+<td align="left">Ppyg</td>
+<td align="left">0.86</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-07_03_39_30</td>
+<td align="left">NSL</td>
+<td align="left">1</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-07_03_41_40</td>
+<td align="left">Mnat</td>
+<td align="left">0.87</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-07_03_41_50</td>
+<td align="left">Mnat</td>
+<td align="left">0.84</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-07_03_42_10</td>
+<td align="left">Mnat</td>
+<td align="left">0.84</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-07_03_49_20</td>
+<td align="left">Ppip</td>
+<td align="left">0.98</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-07_03_49_30</td>
+<td align="left">Ppip</td>
+<td align="left">0.95</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-07_03_52_30</td>
+<td align="left">Ppyg</td>
+<td align="left">0.72</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-07_03_54_20</td>
+<td align="left">Ppip</td>
+<td align="left">0.97</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-07_03_54_30</td>
+<td align="left">Ppyg</td>
+<td align="left">0.71</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-07_04_01_00</td>
+<td align="left">Ppip</td>
+<td align="left">0.98</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-07_04_03_00</td>
+<td align="left">NSL</td>
+<td align="left">1</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-07_04_03_10</td>
+<td align="left">NSL</td>
+<td align="left">0.91</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-07_04_04_20</td>
+<td align="left">Ppip</td>
+<td align="left">0.7</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-07_04_04_50</td>
+<td align="left">NSL</td>
+<td align="left">1</td>
+<td align="left">Ppip 0.91</td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-07_04_05_40</td>
+<td align="left">NSL</td>
+<td align="left">1</td>
+<td align="left">Ppip 0.73</td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-07_04_06_40</td>
+<td align="left">Ppyg</td>
+<td align="left">0.79</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-07_04_08_00</td>
+<td align="left">Ppip</td>
+<td align="left">0.89</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-07_04_27_50</td>
+<td align="left">Ppip</td>
+<td align="left">0.97</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-07_04_29_10</td>
+<td align="left">NSL</td>
+<td align="left">0.99</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-07_04_31_30</td>
+<td align="left">NSL</td>
+<td align="left">1</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-07_04_31_40</td>
+<td align="left">Ppyg</td>
+<td align="left">0.79</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-07_04_35_00</td>
+<td align="left">Ppip</td>
+<td align="left">0.76</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-07_04_37_00</td>
+<td align="left">NSL</td>
+<td align="left">0.98</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-07_04_43_20</td>
+<td align="left">Ppyg</td>
+<td align="left">0.7</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-07_04_45_20</td>
+<td align="left">Ppyg</td>
+<td align="left">0.72</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-07_04_51_50</td>
+<td align="left">Ppip</td>
+<td align="left">0.98</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-07_04_54_30</td>
+<td align="left">Ppip</td>
+<td align="left">0.94</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-07_04_54_40</td>
+<td align="left">NSL</td>
+<td align="left">0.99</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-07_04_59_50</td>
+<td align="left">Ppip</td>
+<td align="left">0.98</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-07_22_01_40</td>
+<td align="left">Ppip</td>
+<td align="left">0.97</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-07_22_06_10</td>
+<td align="left">Ppyg</td>
+<td align="left">0.71</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-07_22_09_50</td>
+<td align="left">Ppyg</td>
+<td align="left">0.72</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-07_22_19_10</td>
+<td align="left">NSL</td>
+<td align="left">0.92</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-07_22_25_30</td>
+<td align="left">Ppip</td>
+<td align="left">0.96</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-07_22_27_50</td>
+<td align="left">Ppip</td>
+<td align="left">0.98</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-07_22_37_40</td>
+<td align="left">Ppip</td>
+<td align="left">0.98</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-07_22_37_50</td>
+<td align="left">Ppip</td>
+<td align="left">0.97</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-07_22_38_10</td>
+<td align="left">Ppip</td>
+<td align="left">0.98</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-07_22_41_10</td>
+<td align="left">Ppip</td>
+<td align="left">0.96</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-07_22_42_00</td>
+<td align="left">Ppip</td>
+<td align="left">0.98</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-07_22_48_20</td>
+<td align="left">Ppip</td>
+<td align="left">0.98</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-07_22_51_00</td>
+<td align="left">Ppyg</td>
+<td align="left">0.72</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-07_22_52_30</td>
+<td align="left">Ppip</td>
+<td align="left">0.98</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-07_22_55_40</td>
+<td align="left">Ppip</td>
+<td align="left">0.89</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-07_23_01_20</td>
+<td align="left">Ppip</td>
+<td align="left">0.71</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-07_23_04_10</td>
+<td align="left">Ppip</td>
+<td align="left">0.8</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-07_23_07_00</td>
+<td align="left">Ppip</td>
+<td align="left">0.96</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-07_23_08_40</td>
+<td align="left">Ppip</td>
+<td align="left">0.97</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-07_23_08_50</td>
+<td align="left">Ppip</td>
+<td align="left">0.98</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-07_23_10_10</td>
+<td align="left">NSL</td>
+<td align="left">0.99</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-07_23_11_50</td>
+<td align="left">Ppyg</td>
+<td align="left">0.8</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-07_23_12_10</td>
+<td align="left">Ppip</td>
+<td align="left">0.98</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-07_23_21_30</td>
+<td align="left">Ppyg</td>
+<td align="left">0.74</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-07_23_22_10</td>
+<td align="left">NSL</td>
+<td align="left">0.99</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-07_23_26_40</td>
+<td align="left">Ppip</td>
+<td align="left">0.92</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-07_23_27_00</td>
+<td align="left">Ppyg</td>
+<td align="left">0.71</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-07_23_29_40</td>
+<td align="left">Ppip</td>
+<td align="left">0.98</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-07_23_30_10</td>
+<td align="left">NSL</td>
+<td align="left">0.96</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-07_23_31_30</td>
+<td align="left">Ppip</td>
+<td align="left">0.98</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-07_23_31_50</td>
+<td align="left">NSL</td>
+<td align="left">0.95</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-07_23_33_20</td>
+<td align="left">Ppip</td>
+<td align="left">0.9</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-07_23_33_30</td>
+<td align="left">Ppip</td>
+<td align="left">0.91</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-07_23_33_50</td>
+<td align="left">Ppip</td>
+<td align="left">0.98</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-07_23_35_00</td>
+<td align="left">Ppip</td>
+<td align="left">0.98</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-07_23_35_10</td>
+<td align="left">Ppip</td>
+<td align="left">0.98</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-07_23_35_40</td>
+<td align="left">Ppip</td>
+<td align="left">0.92</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-07_23_37_00</td>
+<td align="left">Ppip</td>
+<td align="left">0.98</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-07_23_37_10</td>
+<td align="left">Ppip</td>
+<td align="left">0.98</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-07_23_38_00</td>
+<td align="left">Ppip</td>
+<td align="left">0.98</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-07_23_39_30</td>
+<td align="left">Ppip</td>
+<td align="left">0.98</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-07_23_39_40</td>
+<td align="left">Ppip</td>
+<td align="left">0.98</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-07_23_39_50</td>
+<td align="left">Ppip</td>
+<td align="left">0.92</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-07_23_40_00</td>
+<td align="left">Ppip</td>
+<td align="left">0.98</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-07_23_40_20</td>
+<td align="left">Ppip</td>
+<td align="left">0.98</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-07_23_40_30</td>
+<td align="left">Ppip</td>
+<td align="left">0.77</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-07_23_41_30</td>
+<td align="left">Ppyg</td>
+<td align="left">0.71</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-07_23_42_30</td>
+<td align="left">Ppip</td>
+<td align="left">0.98</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-07_23_44_10</td>
+<td align="left">Ppip</td>
+<td align="left">0.98</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-07_23_44_20</td>
+<td align="left">Ppip</td>
+<td align="left">0.98</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-07_23_44_30</td>
+<td align="left">Ppip</td>
+<td align="left">0.97</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-07_23_47_10</td>
+<td align="left">Ppip</td>
+<td align="left">0.92</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-07_23_47_20</td>
+<td align="left">Ppip</td>
+<td align="left">0.95</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-07_23_47_40</td>
+<td align="left">Ppip</td>
+<td align="left">0.97</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-07_23_50_50</td>
+<td align="left">Rfer</td>
+<td align="left">0.98</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-07_23_51_30</td>
+<td align="left">Ppip</td>
+<td align="left">0.98</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-07_23_52_50</td>
+<td align="left">Ppyg</td>
+<td align="left">0.74</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-07_23_53_30</td>
+<td align="left">Ppip</td>
+<td align="left">0.98</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-07_23_55_10</td>
+<td align="left">Ppip</td>
+<td align="left">0.98</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-07_23_56_50</td>
+<td align="left">Ppip</td>
+<td align="left">0.97</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-07_23_57_40</td>
+<td align="left">Ppip</td>
+<td align="left">0.76</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-07_23_58_00</td>
+<td align="left">Ppip</td>
+<td align="left">0.98</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-07_23_59_50</td>
+<td align="left">Ppip</td>
+<td align="left">0.98</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-08_03_34_00</td>
+<td align="left">Ppyg</td>
+<td align="left">0.72</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-08_03_34_50</td>
+<td align="left">NSL</td>
+<td align="left">0.97</td>
+<td align="left">Ppip 0.79</td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-08_03_37_30</td>
+<td align="left">Ppyg</td>
+<td align="left">0.71</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-08_03_37_40</td>
+<td align="left">Ppyg</td>
+<td align="left">0.72</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-08_03_42_30</td>
+<td align="left">Ppip</td>
+<td align="left">0.93</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-08_03_42_40</td>
+<td align="left">Ppip</td>
+<td align="left">0.95</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-08_03_47_50</td>
+<td align="left">Ppip</td>
+<td align="left">0.72</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-08_03_49_10</td>
+<td align="left">Ppyg</td>
+<td align="left">0.77</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-08_03_50_40</td>
+<td align="left">Ppip</td>
+<td align="left">0.94</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-08_03_52_40</td>
+<td align="left">Ppyg</td>
+<td align="left">0.76</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-08_03_53_20</td>
+<td align="left">Ppyg</td>
+<td align="left">0.78</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-08_03_58_10</td>
+<td align="left">Ppyg</td>
+<td align="left">0.77</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-08_04_00_30</td>
+<td align="left">Ppip</td>
+<td align="left">0.97</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-08_04_05_40</td>
+<td align="left">Ppip</td>
+<td align="left">0.96</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-08_04_05_50</td>
+<td align="left">Ppip</td>
+<td align="left">0.97</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-08_04_06_50</td>
+<td align="left">Ppyg</td>
+<td align="left">0.75</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-08_04_08_00</td>
+<td align="left">Ppip</td>
+<td align="left">0.98</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-08_04_09_20</td>
+<td align="left">NSL</td>
+<td align="left">0.9</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-08_04_12_40</td>
+<td align="left">Ppyg</td>
+<td align="left">0.84</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-08_04_20_00</td>
+<td align="left">Ppyg</td>
+<td align="left">0.8</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-08_04_22_50</td>
+<td align="left">NSL</td>
+<td align="left">0.93</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-08_04_24_20</td>
+<td align="left">Ppip</td>
+<td align="left">0.98</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-08_04_26_10</td>
+<td align="left">Ppip</td>
+<td align="left">0.97</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-08_04_26_20</td>
+<td align="left">Ppip</td>
+<td align="left">0.76</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-08_04_26_30</td>
+<td align="left">Ppip</td>
+<td align="left">0.92</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-08_04_31_10</td>
+<td align="left">Ppyg</td>
+<td align="left">0.85</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-08_04_36_30</td>
+<td align="left">Ppyg</td>
+<td align="left">0.78</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-08_04_38_50</td>
+<td align="left">NSL</td>
+<td align="left">0.99</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-08_04_41_20</td>
+<td align="left">Ppyg</td>
+<td align="left">0.75</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-08_04_45_40</td>
+<td align="left">Ppyg</td>
+<td align="left">0.76</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-08_04_46_40</td>
+<td align="left">Ppyg</td>
+<td align="left">0.77</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-08_04_47_20</td>
+<td align="left">MbraMmys</td>
+<td align="left">0.71</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-08_04_51_00</td>
+<td align="left">Ppyg</td>
+<td align="left">0.71</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2018-07-08_04_51_10</td>
+<td align="left">Ppyg</td>
+<td align="left">0.79</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-08_04_53_00</td>
+<td align="left">Ppyg</td>
+<td align="left">0.79</td>
+<td align="left"></td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
